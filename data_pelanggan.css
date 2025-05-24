@@ -15,28 +15,29 @@ h2, h4 {
   text-shadow: 0 0 10px #00e1ff;
 }
 .container {
-  max-width: 1200px;
-  margin: auto;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;  /* Agar tabel bisa di-scroll horizontal */
   padding: 1rem;
+  box-sizing: border-box;
+  border: 1px solid #ddd;  /* Opsional, agar ada border */
+  border-radius: 8px;
 }
 
-/* Tabel Data Pelanggan */
-.table {
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
-  border-collapse: collapse;
+table {
   width: 100%;
-  font-size: 0.95rem;
+  min-width: 800px; /* Atur minimal lebar agar tabel tidak terpotong */
+  border-collapse: collapse;
 }
-.table th, .table td {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.75rem;
-  text-align: center;
+
+th, td {
+  padding: 12px 16px;
+  border: 1px solid #ccc;
+  text-align: left;
 }
-.table th {
-  background: rgba(0, 255, 255, 0.1);
-  color: #00e1ff;
-  text-shadow: 0 0 3px #00e1ff;
+
+th {
+  background-color: #f5f5f5;
 }
 .table tbody tr:hover {
   background: rgba(0, 255, 255, 0.05);
