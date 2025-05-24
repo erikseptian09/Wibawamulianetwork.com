@@ -12,6 +12,49 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+let dataPaket = {
+  "Paket 5Mbps": { "keterangan": "Basic package", "harga": "150000" },
+  "Paket 7Mbps": { "keterangan": "Standard package", "harga": "170000" },
+  "Paket 10Mbps": { "keterangan": "Premium package", "harga": "200000" }
+};
+
+function updateOtomatis() {
+  const paket = document.getElementById('paketBaru').value;
+  if (paket && dataPaket[paket]) {
+    document.getElementById('keteranganBaru').value = dataPaket[paket].keterangan;
+    document.getElementById('hargaBaru').value = dataPaket[paket].harga;
+  } else {
+    document.getElementById('keteranganBaru').value = '';
+    document.getElementById('hargaBaru').value = '';
+  }
+}
+
+function tambahPelangganBaru() {
+  const nama = document.getElementById('namaBaru').value.trim();
+  const keterangan = document.getElementById('keteranganBaru').value.trim();
+  const paket = document.getElementById('paketBaru').value.trim();
+  const harga = document.getElementById('hargaBaru').value.trim();
+
+  if (nama && paket && harga) {
+    const newKey = db.ref().child('pelanggan/aktif').push().key;
+    db.ref('pelanggan/aktif/' + newKey).set({
+      nama: nama,
+      keterangan: keterangan,
+      paket: paket,
+      harga: harga
+    }).then(() => {
+      alert('Pelanggan berhasil ditambahkan!');
+      document.getElementById('namaBaru').value = '';
+      document.getElementById('keteranganBaru').value = '';
+      document.getElementById('paketBaru').value = '';
+      document.getElementById('hargaBaru').value = '';
+      loadPelanggan();
+    });
+  } else {
+    alert('Pilih paket dan isi nama!');
+  }
+}
+
 function loadPelanggan() {
     db.ref('pelanggan/aktif').once('value').then(snapshot => {
         const data = snapshot.val();
@@ -50,7 +93,7 @@ function loadPelanggan() {
 document.getElementById('searchInput').addEventListener('input', function() {
   const filter = this.value.toLowerCase();
   const rows = document.querySelectorAll('#pelangganTable tbody tr');
-  
+
   rows.forEach(row => {
     const nama = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
     if (nama.includes(filter)) {
@@ -61,22 +104,6 @@ document.getElementById('searchInput').addEventListener('input', function() {
   });
 });
 
-let dataPaket = {
-  "Paket 5Mbps": { "keterangan": "Basic package", "harga": "150000" },
-  "Paket 7Mbps": { "keterangan": "Standard package", "harga": "170000" },
-  "Paket 10Mbps": { "keterangan": "Premium package", "harga": "200000" }
-};
-
-function updateOtomatis() {
-  const paket = document.getElementById('paketBaru').value;
-  if (paket && dataPaket[paket]) {
-    document.getElementById('keteranganBaru').value = dataPaket[paket].keterangan;
-    document.getElementById('hargaBaru').value = dataPaket[paket].harga;
-  } else {
-    document.getElementById('keteranganBaru').value = '';
-    document.getElementById('hargaBaru').value = '';
-  }
-}
 
 function loadPelangganLunas() {
     db.ref('pelanggan/lunas').once('value').then(snapshot => {
@@ -170,31 +197,6 @@ function kembalikanPelanggan(id) {
     });
 }
 
-function tambahPelangganBaru() {
-  const nama = document.getElementById('namaBaru').value.trim();
-  const keterangan = document.getElementById('keteranganBaru').value.trim();
-  const paket = document.getElementById('paketBaru').value.trim();
-  const harga = document.getElementById('hargaBaru').value.trim();
-
-  if (nama && paket && harga) {
-    const newKey = db.ref().child('pelanggan/aktif').push().key;
-    db.ref('pelanggan/aktif/' + newKey).set({
-      nama: nama,
-      keterangan: keterangan,
-      paket: paket,
-      harga: harga
-    }).then(() => {
-      alert('Pelanggan berhasil ditambahkan!');
-      document.getElementById('namaBaru').value = '';
-      document.getElementById('keteranganBaru').value = '';
-      document.getElementById('paketBaru').value = '';
-      document.getElementById('hargaBaru').value = '';
-      loadPelanggan();
-    });
-  } else {
-    alert('Pilih paket dan isi nama!');
-  }
-}
 window.onload = function() {
     document.getElementById('tahun').textContent = new Date().getFullYear();
 
