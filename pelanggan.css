@@ -128,7 +128,7 @@ footer {
 }
 
 @media (max-width: 768px) {
-  #pelangganTable {
+  #pelangganTable, .data-table{
     font-size: 0.80rem;
     min-width: 100%;
   }
@@ -169,7 +169,7 @@ footer {
   }
 
   #pelangganTable th,
-  #pelangganTable td {
+  #pelangganTable td, .data-table th, .data-table td {
     padding: 8px 6px;
     font-size: 0.5rem;
   }
