@@ -1,0 +1,191 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyD-6bKBL82Gyc_yVYn8AyLmK3ih3IiFtpI",
+  authDomain: "aplikasi-pelanggan.firebaseapp.com",
+  databaseURL: "https://aplikasi-pelanggan-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "aplikasi-pelanggan",
+  storageBucket: "aplikasi-pelanggan.firebasestorage.app",
+  messagingSenderId: "693408241938",
+  appId: "1:693408241938:web:8c1099bb15533056f6bbcb",
+  measurementId: "G-4E8QYEE8ES"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+function loadPelanggan() {
+    db.ref('pelanggan/aktif').once('value').then(snapshot => {
+        const data = snapshot.val();
+        const tbody = document.getElementById('tabelBody');
+        tbody.innerHTML = '';
+        let no = 1;
+        let total = 0;
+
+        for (let key in data) {
+            const p = data[key];
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+                <td>${no++}</td>
+                <td>${key}</td>
+                <td><strong>${p.nama}</strong></td>
+                <td>${p.keterangan || '-'}</td>
+                <td>${p.paket}</td>
+                <td>Rp. ${parseInt(p.harga).toLocaleString('id-ID')}</td>
+                <td>
+                    <button onclick="editPelanggan('${key}')">✏️</button>
+                    <button class="hapus" onclick="hapusPelanggan('${key}')">🗑️</button>
+                    <button class="bayar" onclick="bayarPelanggan('${key}')">💳</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+
+            total += parseInt(p.harga || 0);
+        }
+
+        document.getElementById('totalHarga').innerText = `Rp. ${total.toLocaleString('id-ID')}`;
+    });
+}
+
+let dataPaket = {
+  "Paket A": { "keterangan": "Basic package", "harga": "150000" },
+  "Paket B": { "keterangan": "Standard package", "harga": "200000" },
+  "Paket C": { "keterangan": "Premium package", "harga": "250000" }
+};
+
+function updateOtomatis() {
+  const paket = document.getElementById('paketBaru').value;
+  if (paket && dataPaket[paket]) {
+    document.getElementById('keteranganBaru').value = dataPaket[paket].keterangan;
+    document.getElementById('hargaBaru').value = dataPaket[paket].harga;
+  } else {
+    document.getElementById('keteranganBaru').value = '';
+    document.getElementById('hargaBaru').value = '';
+  }
+}
+
+function loadPelangganLunas() {
+    db.ref('pelanggan/lunas').once('value').then(snapshot => {
+        const data = snapshot.val();
+        const tbody = document.getElementById('tabelLunasBody');
+        tbody.innerHTML = '';
+        let no = 1;
+        let total = 0;
+
+        for (let key in data) {
+            const p = data[key];
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+                <td>${no++}</td>
+                <td>${key}</td>
+                <td><strong>${p.nama}</strong></td>
+                <td>${p.keterangan || '-'}</td>
+                <td>${p.paket}</td>
+                <td>Rp. ${parseInt(p.harga).toLocaleString('id-ID')}</td>
+                <td>
+                    <button class="kembalikan" onclick="kembalikanPelanggan('${key}')">↩️</button>
+                    <button class="hapus" onclick="hapusPelangganLunas('${key}')">🗑️</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+
+            total += parseInt(p.harga || 0);
+        }
+
+        document.getElementById('totalHargaLunas').innerText = `Rp. ${total.toLocaleString('id-ID')}`;
+    });
+}
+
+function editPelanggan(id) {
+    const namaBaru = prompt("Masukkan nama baru:");
+    const paketBaru = prompt("Masukkan paket baru:");
+    const hargaBaru = prompt("Masukkan harga baru:");
+
+    if (namaBaru && paketBaru && hargaBaru) {
+        db.ref(`pelanggan/aktif/${id}`).update({
+            nama: namaBaru,
+            paket: paketBaru,
+            harga: hargaBaru
+        }).then(() => {
+            alert("Data berhasil diupdate!");
+            loadPelanggan();
+        });
+    }
+}
+
+function hapusPelanggan(id) {
+    if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+        db.ref(`pelanggan/aktif/${id}`).remove().then(() => {
+            alert("Data berhasil dihapus!");
+            loadPelanggan();
+        });
+    }
+}
+
+function hapusPelangganLunas(id) {
+    if (confirm("Apakah Anda yakin ingin menghapus data ini dari Lunas?")) {
+        db.ref(`pelanggan/lunas/${id}`).remove().then(() => {
+            alert("Data berhasil dihapus dari Lunas!");
+            loadPelangganLunas();
+        });
+    }
+}
+
+function bayarPelanggan(id) {
+    db.ref(`pelanggan/aktif/${id}`).once('value').then(snapshot => {
+        const data = snapshot.val();
+        db.ref(`pelanggan/lunas/${id}`).set(data).then(() => {
+            db.ref(`pelanggan/aktif/${id}`).remove().then(() => {
+                alert("Data berhasil dipindahkan ke Lunas!");
+                loadPelanggan();
+            });
+        });
+    });
+}
+
+function kembalikanPelanggan(id) {
+    db.ref(`pelanggan/lunas/${id}`).once('value').then(snapshot => {
+        const data = snapshot.val();
+        db.ref(`pelanggan/aktif/${id}`).set(data).then(() => {
+            db.ref(`pelanggan/lunas/${id}`).remove().then(() => {
+                alert("Data berhasil dikembalikan ke Aktif!");
+                loadPelangganLunas();
+            });
+        });
+    });
+}
+
+function tambahPelangganBaru() {
+  const nama = document.getElementById('namaBaru').value.trim();
+  const keterangan = document.getElementById('keteranganBaru').value.trim();
+  const paket = document.getElementById('paketBaru').value.trim();
+  const harga = document.getElementById('hargaBaru').value.trim();
+
+  if (nama && paket && harga) {
+    const newKey = db.ref().child('pelanggan/aktif').push().key;
+    db.ref('pelanggan/aktif/' + newKey).set({
+      nama: nama,
+      keterangan: keterangan,
+      paket: paket,
+      harga: harga
+    }).then(() => {
+      alert('Pelanggan berhasil ditambahkan!');
+      document.getElementById('namaBaru').value = '';
+      document.getElementById('keteranganBaru').value = '';
+      document.getElementById('paketBaru').value = '';
+      document.getElementById('hargaBaru').value = '';
+      loadPelanggan();
+    });
+  } else {
+    alert('Pilih paket dan isi nama!');
+  }
+}
+window.onload = function() {
+    document.getElementById('tahun').textContent = new Date().getFullYear();
+
+    if (document.getElementById('tabelBody')) {
+        loadPelanggan();
+    } else if (document.getElementById('tabelLunasBody')) {
+        loadPelangganLunas();
+    }
+};
