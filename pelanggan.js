@@ -29,6 +29,27 @@ function updateOtomatis() {
   }
 }
 
+// Fungsi generate ID pelanggan baru
+function generateIDPelanggan(callback) {
+  db.ref('pelanggan/aktif').once('value').then(snapshot => {
+    const data = snapshot.val();
+    let maxID = 0;
+
+    if (data) {
+      Object.keys(data).forEach(key => {
+        const match = key.match(/pel_(\\d+)/);
+        if (match) {
+          const num = parseInt(match[1]);
+          if (num > maxID) maxID = num;
+        }
+      });
+    }
+
+    const newID = 'pel_' + String(maxID + 1).padStart(3, '0');
+    callback(newID);
+  });
+}
+
 function tambahPelangganBaru() {
   const nama = document.getElementById('namaBaru').value.trim();
   const keterangan = document.getElementById('keteranganBaru').value.trim();
@@ -36,19 +57,20 @@ function tambahPelangganBaru() {
   const harga = document.getElementById('hargaBaru').value.trim();
 
   if (nama && paket && harga) {
-    const newKey = db.ref().child('pelanggan/aktif').push().key;
-    db.ref('pelanggan/aktif/' + newKey).set({
-      nama: nama,
-      keterangan: keterangan,
-      paket: paket,
-      harga: harga
-    }).then(() => {
-      alert('Pelanggan berhasil ditambahkan!');
-      document.getElementById('namaBaru').value = '';
-      document.getElementById('keteranganBaru').value = '';
-      document.getElementById('paketBaru').value = '';
-      document.getElementById('hargaBaru').value = '';
-      loadPelanggan();
+    generateIDPelanggan(function(newKey) {
+      db.ref('pelanggan/aktif/' + newKey).set({
+        nama: nama,
+        keterangan: keterangan,
+        paket: paket,
+        harga: harga
+      }).then(() => {
+        alert('Pelanggan berhasil ditambahkan!');
+        document.getElementById('namaBaru').value = '';
+        document.getElementById('keteranganBaru').value = '';
+        document.getElementById('paketBaru').value = '';
+        document.getElementById('hargaBaru').value = '';
+        loadPelanggan();
+      });
     });
   } else {
     alert('Pilih paket dan isi nama!');
