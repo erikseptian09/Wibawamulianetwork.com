@@ -129,7 +129,7 @@ footer {
 
 @media (max-width: 768px) {
   #pelangganTable {
-    font-size: 0.85rem;
+    font-size: 0.80rem;
     min-width: 100%;
   }
 
@@ -160,7 +160,7 @@ footer {
   }
 
   h1 {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
   nav a {
     display: block;
