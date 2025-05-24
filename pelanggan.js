@@ -46,6 +46,21 @@ function loadPelanggan() {
     });
 }
 
+// Fungsi search pelanggan
+document.getElementById('searchInput').addEventListener('input', function() {
+  const filter = this.value.toLowerCase();
+  const rows = document.querySelectorAll('#pelangganTable tbody tr');
+  
+  rows.forEach(row => {
+    const nama = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+    if (nama.includes(filter)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+});
+
 let dataPaket = {
   "Paket A": { "keterangan": "Basic package", "harga": "150000" },
   "Paket B": { "keterangan": "Standard package", "harga": "200000" },
