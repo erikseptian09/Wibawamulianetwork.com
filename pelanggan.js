@@ -62,9 +62,9 @@ document.getElementById('searchInput').addEventListener('input', function() {
 });
 
 let dataPaket = {
-  "Paket A": { "keterangan": "Basic package", "harga": "150000" },
-  "Paket B": { "keterangan": "Standard package", "harga": "200000" },
-  "Paket C": { "keterangan": "Premium package", "harga": "250000" }
+  "Paket 5Mbps": { "keterangan": "Basic package", "harga": "150000" },
+  "Paket 7Mbps": { "keterangan": "Standard package", "harga": "170000" },
+  "Paket 10Mbps": { "keterangan": "Premium package", "harga": "200000" }
 };
 
 function updateOtomatis() {
