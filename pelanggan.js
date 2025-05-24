@@ -52,7 +52,7 @@ document.getElementById('searchInput').addEventListener('input', function() {
   const rows = document.querySelectorAll('#pelangganTable tbody tr');
   
   rows.forEach(row => {
-    const nama = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+    const nama = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
     if (nama.includes(filter)) {
       row.style.display = '';
     } else {
