@@ -128,17 +128,9 @@ footer {
 }
 
 @media (max-width: 768px) {
-header {
-  background: linear-gradient(90deg, #4A00E0, #8E2DE2);
-  color: #fff;
-  text-align: center;
-  padding: 10px;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 1px;
-}
   #pelangganTable {
     font-size: 0.85rem;
+    min-width: 100%;
   }
 
   button {
@@ -148,5 +140,43 @@ header {
 
   header {
     font-size: 1.5rem;
+    padding: 15px;
+  }
+
+  .table-container {
+    padding: 10px;
+  }
+
+  .total {
+    font-size: 1rem;
+  }
+}
+
+/* Tambahan untuk layar lebih kecil (mobile <= 480px) */
+@media (max-width: 480px) {
+  header {
+    font-size: 1.2rem;
+    padding: 10px;
+  }
+
+  nav a {
+    display: block;
+    margin: 5px 0;
+    text-align: center;
+  }
+
+  #pelangganTable th,
+  #pelangganTable td {
+    padding: 8px 6px;
+    font-size: 0.75rem;
+  }
+
+  button {
+    padding: 4px 6px;
+    font-size: 0.7rem;
+  }
+
+  .total {
+    font-size: 0.95rem;
   }
 }
