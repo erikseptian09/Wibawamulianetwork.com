@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>e-Billing - Pelanggan Lunas</title>
+    <link rel="stylesheet" href="pelanggan.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+    <header class="header">
+        <h1>e-Billing System</h1>
+        <nav><a href="new_data_pelanggan.html">Kembali ke Data Aktif</a></nav>
+    </header>
+
+    <main class="main-content">
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>ID</th>
+                        <th>Nama</th>
+                        <th>Keterangan</th>
+                        <th>Paket</th>
+                        <th>Harga</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelLunasBody"></tbody>
+            </table>
+            <div class="total"><strong>Total:</strong> <span id="totalHargaLunas">Rp. 0</span></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="tahun"></span> WBM.NET Created 2025</p>
+    </footer>
+
+    <script src="pelanggan.js"></script>
+</body>
+</html>
