@@ -1,0 +1,143 @@
+/* Reset dasar */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f5f7fa;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background: linear-gradient(90deg, #4A00E0, #8E2DE2);
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  margin-left: 10px;
+  font-size: 0.9rem;
+  transition: background 0.3s;
+}
+
+nav a:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+main {
+  flex: 1;
+  padding: 20px;
+}
+
+.table-container {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 20px;
+  overflow-x: auto;
+}
+
+#pelangganTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+#pelangganTable th {
+  background: #4A00E0;
+  color: #fff;
+  padding: 12px 10px;
+  text-align: center;
+  font-weight: bold;
+}
+
+#pelangganTable td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+#pelangganTable tr:nth-child(even) {
+  background: #f4f4f4;
+}
+
+#pelangganTable tr:hover {
+  background: #e0f7fa;
+}
+
+button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+button.edit {
+  background: #4CAF50;
+  color: white;
+}
+
+button.hapus {
+  background: #f44336;
+  color: white;
+}
+
+button.bayar {
+  background: #00BCD4;
+  color: white;
+}
+
+.total {
+  margin-top: 15px;
+  text-align: right;
+  font-size: 1.1rem;
+  color: #4A00E0;
+}
+
+
+
+footer {
+  text-align: center;
+  padding: 15px;
+  background: #e0e0e0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+@media (max-width: 768px) {
+  #pelangganTable {
+    font-size: 0.85rem;
+  }
+
+  button {
+    padding: 5px 8px;
+    font-size: 0.8rem;
+  }
+
+  header {
+    font-size: 1.5rem;
+  }
+}
