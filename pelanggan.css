@@ -155,12 +155,12 @@ footer {
 /* Tambahan untuk layar lebih kecil (mobile <= 480px) */
 @media (max-width: 480px) {
   header {
-    font-size: 1.2rem;
+    font-size: 1rem;
     padding: 10px;
   }
 
   h1 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
   }
   nav a {
     display: block;
@@ -171,7 +171,7 @@ footer {
   #pelangganTable th,
   #pelangganTable td {
     padding: 8px 6px;
-    font-size: 0.75rem;
+    font-size: 0.5rem;
   }
 
   button {
