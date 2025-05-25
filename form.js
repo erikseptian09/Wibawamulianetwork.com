@@ -27,26 +27,27 @@ function login() {
   }
 
   auth.signInWithEmailAndPassword(email, password)
-  .then((userCredential) => {
-    const user = userCredential.user;
-    if (user.emailVerified) {
-      window.location.href = 'index.html';
-    } else {
-      alert("Silakan verifikasi email Anda terlebih dahulu.");
-      auth.signOut();
-    }
-  })
-  .catch((error) => {
-    if (error.code === 'auth/wrong-password') {
-      alert("Password yang Anda masukkan salah.");
-    } else if (error.code === 'auth/user-not-found') {
-      alert("Akun dengan email ini tidak terdaftar.");
-    } else if (error.code === 'auth/invalid-email') {
-      alert("Format email tidak valid.");
-    } else {
-      alert("Terjadi kesalahan: " + error.message);
-    }
-  });
+    .then((userCredential) => {
+      const user = userCredential.user;
+      if (user.emailVerified) {
+        window.location.href = 'index.html';
+      } else {
+        alert("Silakan verifikasi email Anda terlebih dahulu.");
+        auth.signOut();
+      }
+    })
+    .catch((error) => {
+      if (error.code === 'auth/wrong-password') {
+        alert("Password yang Anda masukkan salah.");
+      } else if (error.code === 'auth/user-not-found') {
+        alert("Akun dengan email ini tidak terdaftar.");
+      } else if (error.code === 'auth/invalid-email') {
+        alert("Format email tidak valid.");
+      } else {
+        alert("Terjadi kesalahan: " + error.message);
+      }
+    });
+}
 // Register Function
 function register() {
   const email = document.getElementById('email').value.trim();
