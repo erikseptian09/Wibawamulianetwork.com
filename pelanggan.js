@@ -13,6 +13,28 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
+// Show/Hide Password
+function togglePassword() {
+  const passwordInput = document.getElementById('password');
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+  } else {
+    passwordInput.type = 'password';
+  }
+}
+
+// Fungsi tampilkan pesan error
+function showError(message) {
+  const errorBox = document.getElementById('errorMsg');
+  if (errorBox) {
+    errorBox.innerHTML = '<span>' + message + '</span>';
+    errorBox.style.display = 'block';
+    setTimeout(() => { errorBox.style.display = 'none'; }, 4000);
+  } else {
+    alert(message);
+  }
+}
+
 // Cek login status di index.html
 if (window.location.pathname.includes('index.html')) {
   auth.onAuthStateChanged(user => {
@@ -28,6 +50,12 @@ if (window.location.pathname.includes('index.html')) {
 function login() {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value.trim();
+
+  if (password.length < 8) {
+    showError("Password minimal 8 karakter");
+    return;
+  }
+
   auth.signInWithEmailAndPassword(email, password)
     .then(() => { window.location.href = 'Home.html'; })
     .catch(error => {
@@ -37,18 +65,38 @@ function login() {
       } else if (error.code === 'auth/invalid-email') {
         message = "Format email tidak valid";
       } else {
-        message = error.message; // fallback untuk error lain
+        message = error.message;
       }
       showError(message);
     });
 }
+
 // Register function
 function register() {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value.trim();
+
+  if (password.length < 8) {
+    showError("Password minimal 8 karakter");
+    return;
+  }
+
   auth.createUserWithEmailAndPassword(email, password)
-    .then(() => { alert('Registrasi berhasil! Silakan login.'); window.location.href = 'index.html'; })
-    .catch(error => { alert(error.message); });
+    .then(() => {
+      alert('Registrasi berhasil! Silakan login.');
+      window.location.href = 'index.html';
+    })
+    .catch(error => {
+      let message = "";
+      if (error.code === 'auth/email-already-in-use') {
+        message = "Email sudah digunakan, silakan gunakan email lain.";
+      } else if (error.code === 'auth/invalid-email') {
+        message = "Format email tidak valid.";
+      } else {
+        message = error.message;
+      }
+      showError(message);
+    });
 }
 
 let dataPaket = {
