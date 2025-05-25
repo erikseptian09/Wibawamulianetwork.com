@@ -37,6 +37,7 @@ function login() {
       window.location.href = 'Home.html';
     })
     .catch((error) => {
+      console.log(error.code);
       if (error.code === 'auth/wrong-password') {
         alert("Password yang Anda masukkan salah.");
       } else if (error.code === 'auth/user-not-found') {
