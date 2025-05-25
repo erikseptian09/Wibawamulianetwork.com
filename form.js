@@ -34,7 +34,7 @@ function login() {
   auth.signInWithEmailAndPassword(email, password)
     .then(() => {
       // Login berhasil, langsung redirect tanpa cek verifikasi email
-      window.location.href = 'Home.html';
+      window.location.href = 'pelanggan_data.html';
     })
     .catch((error) => {
       console.log(error.code);
@@ -67,7 +67,7 @@ function register() {
   auth.createUserWithEmailAndPassword(email, password)
     .then(() => {
       alert('Registrasi berhasil! Silakan login.');
-      window.location.href = 'index.html';
+      window.location.href = 'login.html';
     })
     .catch(error => {
       let message = "";
@@ -85,7 +85,7 @@ function register() {
 // Cek Login Status
 auth.onAuthStateChanged(user => {
   if (window.location.pathname.includes('index.html') && !user) {
-    window.location.href = 'Home.html';
+    window.location.href = 'login.html';
   }
 });
 
