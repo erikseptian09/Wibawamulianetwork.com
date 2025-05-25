@@ -4,10 +4,14 @@ const auth = firebase.auth();
 // Show/Hide Password
 function togglePassword() {
   const passwordInput = document.getElementById('password');
+  const toggleIcon = document.getElementById('toggleIcon');
+
   if (passwordInput.type === 'password') {
     passwordInput.type = 'text';
+    toggleIcon.textContent = '🙈'; // Ganti icon jadi tutup mata
   } else {
     passwordInput.type = 'password';
+    toggleIcon.textContent = '👁️'; // Kembali ke mata terbuka
   }
 }
 
