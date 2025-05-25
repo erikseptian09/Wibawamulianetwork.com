@@ -1,0 +1,82 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #4A00E0, #8E2DE2);
+  color: #fff;
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center; /* horizontal center */
+  align-items: center;     /* vertical center */
+}
+
+.box {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 40px 30px;
+  width: 320px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.box h2 {
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.box input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.toggle-btn {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-78%);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 10;
+}
+.box button {
+  width: 100%;
+  padding: 12px;
+  background: #00BCD4;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.box button:hover {
+  background: #0097a7;
+}
+
+.box p {
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+.box a {
+  color: #FFC107;
+  text-decoration: none;
+}
+
+.error {
+  color: #FFC107;
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
