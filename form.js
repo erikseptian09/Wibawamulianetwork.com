@@ -37,7 +37,8 @@ function login() {
       window.location.href = 'data_pelanggan.html';
     })
     .catch((error) => {
-      console.log(error.code);
+      console.log("Kode error:", error.code);
+      console.log("Pesan error:", error.message);
       if (error.code === 'auth/wrong-password') {
         alert("Password yang Anda masukkan salah.");
       } else if (error.code === 'auth/user-not-found') {
