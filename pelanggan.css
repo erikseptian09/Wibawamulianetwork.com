@@ -38,9 +38,28 @@ body {
   font-size: 0.95rem;
 }
 
-.password-field { position: relative; }
-.toggle-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #fff; font-size: 1.1rem; cursor: pointer; }
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
 
+.password-wrapper input {
+  width: 100%;
+  padding-right: 40px; /* Biar ada ruang buat tombol 👁️ */
+}
+
+.toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 10;
+}
 .box button {
   width: 100%;
   padding: 12px;
