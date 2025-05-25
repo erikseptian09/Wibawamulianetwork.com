@@ -28,14 +28,9 @@ function login() {
   }
 
   auth.signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-      if (user.emailVerified) {
-        window.location.href = 'index.html';
-      } else {
-        alert("Silakan verifikasi email Anda terlebih dahulu.");
-        auth.signOut();
-      }
+    .then(() => {
+      // Login berhasil, langsung redirect tanpa cek verifikasi email
+      window.location.href = 'Home.html';
     })
     .catch((error) => {
       if (error.code === 'auth/wrong-password') {
