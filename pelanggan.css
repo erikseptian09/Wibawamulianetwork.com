@@ -38,6 +38,9 @@ body {
   font-size: 0.95rem;
 }
 
+.password-field { position: relative; }
+.toggle-btn { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #fff; font-size: 1.1rem; cursor: pointer; }
+
 .box button {
   width: 100%;
   padding: 12px;
