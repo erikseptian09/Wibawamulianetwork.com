@@ -26,23 +26,17 @@ function login() {
     return;
   }
 
-  if (password.length < 8) {
-    alert("Password minimal 8 karakter");
-    return;
-  }
-
   auth.signInWithEmailAndPassword(email, password)
     .then(() => {
-      // Login berhasil, langsung redirect tanpa cek verifikasi email
+      alert("Login berhasil!");
       window.location.href = 'data_pelanggan.html';
     })
     .catch((error) => {
       console.log("Kode error:", error.code);
-      console.log("Pesan error:", error.message);
       if (error.code === 'auth/wrong-password') {
-        alert("Password yang Anda masukkan salah.");
+        alert("Password salah!");
       } else if (error.code === 'auth/user-not-found') {
-        alert("Akun dengan email ini tidak terdaftar.");
+        alert("Email tidak terdaftar.");
       } else if (error.code === 'auth/invalid-email') {
         alert("Format email tidak valid.");
       } else {
