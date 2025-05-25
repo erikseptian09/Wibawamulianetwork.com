@@ -13,8 +13,10 @@
   <div class="box">
     <h2>Daftar e-Billing</h2>
     <input type="email" id="email" placeholder="Email">
-    <input type="password" class="password-wrapper" id="password" placeholder="Password">
-<button type="button" onclick="togglePassword()">👁️</button>
+   <div class="password-wrapper">
+  <input type="password" id="password" placeholder="Password">
+  <button type="button" class="toggle-btn" onclick="togglePassword()">👁️</button>
+</div>
     <button onclick="register()">Daftar</button>
     <p class="error" id="errorMsg"></p>
     <p><a href="index.html" style="color:#FFC107;">Sudah punya akun? Login</a></p>
