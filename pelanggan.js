@@ -23,36 +23,18 @@ function togglePassword() {
   }
 }
 
-// Fungsi tampilkan pesan error
-function showError(message) {
-  const errorBox = document.getElementById('errorMsg');
-  if (errorBox) {
-    errorBox.innerHTML = '<span>' + message + '</span>';
-    errorBox.style.display = 'block';
-    setTimeout(() => { errorBox.style.display = 'none'; }, 4000);
-  } else {
-    alert(message);
-  }
-}
-
-// Cek login status di index.html
-if (window.location.pathname.includes('index.html')) {
-  auth.onAuthStateChanged(user => {
-    if (!user) window.location.href = 'Home.html';
-  });
-
-  function logout() {
-    auth.signOut().then(() => window.location.href = 'index.html');
-  }
-}
-
-// Login function
+// Login Function
 function login() {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value.trim();
 
+  if (!email || !password) {
+    alert("Silakan isi data dengan benar");
+    return;
+  }
+
   if (password.length < 8) {
-    showError("Password minimal 8 karakter");
+    alert("Password minimal 8 karakter");
     return;
   }
 
@@ -67,17 +49,22 @@ function login() {
       } else {
         message = error.message;
       }
-      showError(message);
+      alert(message);
     });
 }
 
-// Register function
+// Register Function
 function register() {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value.trim();
 
+  if (!email || !password) {
+    alert("Silakan isi data dengan benar");
+    return;
+  }
+
   if (password.length < 8) {
-    showError("Password minimal 8 karakter");
+    alert("Password minimal 8 karakter");
     return;
   }
 
@@ -95,9 +82,22 @@ function register() {
       } else {
         message = error.message;
       }
-      showError(message);
+      alert(message);
     });
 }
+
+// Cek Login Status
+auth.onAuthStateChanged(user => {
+  if (window.location.pathname.includes('index.html') && !user) {
+    window.location.href = 'Home.html';
+  }
+});
+
+function logout() {
+  auth.signOut().then(() => window.location.href = 'index.html');
+}
+
+
 
 let dataPaket = {
   "Paket 5Mbps": { "keterangan": "Basic package", "harga": "150000" },
