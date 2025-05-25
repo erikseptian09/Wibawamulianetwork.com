@@ -39,7 +39,7 @@ function login() {
   }
 
   auth.signInWithEmailAndPassword(email, password)
-    .then(() => { window.location.href = 'index.html'; })
+    .then(() => { window.location.href = 'Home.html'; })
     .catch(error => {
       let message = "";
       if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
