@@ -29,10 +29,19 @@ function login() {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value.trim();
   auth.signInWithEmailAndPassword(email, password)
-    .then(() => { window.location.href = 'Home.html'; })
-    .catch(error => { alert(error.message); });
+    .then(() => { window.location.href = 'index.html'; })
+    .catch(error => {
+      let message = "";
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        message = "Silakan isi data yang sudah terdaftar";
+      } else if (error.code === 'auth/invalid-email') {
+        message = "Format email tidak valid";
+      } else {
+        message = error.message; // fallback untuk error lain
+      }
+      showError(message);
+    });
 }
-
 // Register function
 function register() {
   const email = document.getElementById('email').value.trim();
