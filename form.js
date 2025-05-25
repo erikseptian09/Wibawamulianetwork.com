@@ -34,7 +34,7 @@ function login() {
   auth.signInWithEmailAndPassword(email, password)
     .then(() => {
       // Login berhasil, langsung redirect tanpa cek verifikasi email
-      window.location.href = 'pelanggan_data.html';
+      window.location.href = 'data_pelanggan.html';
     })
     .catch((error) => {
       console.log(error.code);
