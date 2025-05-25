@@ -84,11 +84,7 @@ function register() {
 
 // Cek Login Status
 auth.onAuthStateChanged(user => {
-  if (window.location.pathname.includes('index.html') && !user) {
-    window.location.href = 'login.html';
+  if (window.location.pathname.includes('login.html') && !user) {
+    window.location.href = 'data_pelanggan.html';
   }
 });
-
-function logout() {
-  auth.signOut().then(() => window.location.href = 'index.html');
-}
