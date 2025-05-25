@@ -8,10 +8,10 @@ function togglePassword() {
 
   if (passwordInput.type === 'password') {
     passwordInput.type = 'text';
-    toggleIcon.textContent = '🙈'; // Ganti icon jadi tutup mata
+    toggleIcon.textContent = '👀'; // Ganti icon jadi tutup mata
   } else {
     passwordInput.type = 'password';
-    toggleIcon.textContent = '👁️'; // Kembali ke mata terbuka
+    toggleIcon.textContent = '🙈'; // Kembali ke mata terbuka
   }
 }
 
