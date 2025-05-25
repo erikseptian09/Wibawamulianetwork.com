@@ -46,7 +46,7 @@ body {
 .toggle-btn {
   position: absolute;
   right: 15px;
-  top: 50%;
+  top: 47%;
   transform: translateY(-50%);
   color: #fff;
   font-size: 1.2rem;
