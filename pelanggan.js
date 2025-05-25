@@ -10,7 +10,37 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
 const db = firebase.database();
+
+// Cek login status di index.html
+if (window.location.pathname.includes('index.html')) {
+  auth.onAuthStateChanged(user => {
+    if (!user) window.location.href = 'Home.html';
+  });
+
+  function logout() {
+    auth.signOut().then(() => window.location.href = 'index.html');
+  }
+}
+
+// Login function
+function login() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  auth.signInWithEmailAndPassword(email, password)
+    .then(() => { window.location.href = 'Home.html'; })
+    .catch(error => { alert(error.message); });
+}
+
+// Register function
+function register() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  auth.createUserWithEmailAndPassword(email, password)
+    .then(() => { alert('Registrasi berhasil! Silakan login.'); window.location.href = 'index.html'; })
+    .catch(error => { alert(error.message); });
+}
 
 let dataPaket = {
   "Paket 5Mbps": { "keterangan": "Basic package", "harga": "150000" },
