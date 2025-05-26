@@ -1,5 +1,4 @@
-
-// pelanggan.js (Final Lengkap dengan Ikon dan Fungsi Lengkap)
+// pelanggan.js (Final tanpa Upload JSON)
 const db = firebase.database();
 
 // Data Paket
@@ -9,36 +8,7 @@ let dataPaket = {
   "Paket 10 Mbps": { "keterangan": "(Paket Bisnis)", "harga": "200000" }
 };
 
-// Upload JSON
-function uploadJSON() {
-  const fileInput = document.getElementById('jsonFile');
-  const file = fileInput.files[0];
-  if (!file) {
-    alert('Pilih file JSON terlebih dulu.');
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const json = JSON.parse(e.target.result);
-    if (json.pelanggan && json.pelanggan.aktif) {
-      db.ref('pelanggan/aktif').set(json.pelanggan.aktif, (error) => {
-        if (error) {
-          alert('Gagal upload data: ' + error.message);
-        } else {
-          alert('Data berhasil diupload!');
-          loadPelanggan();
-          loadPelangganLunas();
-        }
-      });
-    } else {
-      alert('Format JSON tidak sesuai. Harus ada pelanggan > aktif');
-    }
-  };
-  reader.readAsText(file);
-}
-
-// Update Keterangan & Harga
+// Update Keterangan & Harga Otomatis
 function updateOtomatis() {
   const paket = document.getElementById('paketBaru').value;
   if (paket && dataPaket[paket]) {
@@ -50,26 +20,7 @@ function updateOtomatis() {
   }
 }
 
-// Generate ID Pelanggan
-function generateIDPelanggan(callback) {
-  db.ref('pelanggan/aktif').once('value').then(snapshot => {
-    const data = snapshot.val();
-    let maxID = 0;
-    if (data) {
-      Object.keys(data).forEach(key => {
-        const match = key.match(/pel_(\d+)/);
-        if (match) {
-          const num = parseInt(match[1]);
-          if (num > maxID) maxID = num;
-        }
-      });
-    }
-    const newID = 'pel_' + String(maxID + 1).padStart(3, '0');
-    callback(newID);
-  });
-}
-
-// Tambah Pelanggan
+// Tambah Pelanggan Baru
 function tambahPelangganBaru() {
   const nama = document.getElementById('namaBaru').value.trim();
   const keterangan = document.getElementById('keteranganBaru').value.trim();
@@ -77,8 +28,19 @@ function tambahPelangganBaru() {
   const harga = document.getElementById('hargaBaru').value.trim();
 
   if (nama && paket && harga) {
-    generateIDPelanggan(function(newKey) {
-      db.ref('pelanggan/aktif/' + newKey).set({
+    db.ref('pelanggan/aktif').once('value').then(snapshot => {
+      const data = snapshot.val() || {};
+      let maxID = 0;
+      for (let key in data) {
+        const match = key.match(/pel_(\\d+)/);
+        if (match) {
+          const num = parseInt(match[1]);
+          if (num > maxID) maxID = num;
+        }
+      }
+      const newID = 'pel_' + String(maxID + 1).padStart(3, '0');
+
+      db.ref('pelanggan/aktif/' + newID).set({
         nama, keterangan, paket, harga
       }).then(() => {
         alert('Pelanggan berhasil ditambahkan!');
@@ -94,7 +56,7 @@ function tambahPelangganBaru() {
   }
 }
 
-// Load Pelanggan Aktif
+// Load Data Pelanggan Aktif
 function loadPelanggan() {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
     const data = snapshot.val() || {};
@@ -115,9 +77,9 @@ function loadPelanggan() {
         <td>${p.paket || '-'}</td>
         <td>Rp. ${parseInt(p.harga || 0).toLocaleString('id-ID')}</td>
         <td>
-          <button onclick="bayarPelanggan('${key}')" title="Bayar"><i class="fa-solid fa-money-bill"></i></button>
-          <button onclick="editPelanggan('${key}')" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-          <button onclick="hapusPelanggan('${key}')" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+          <button onclick="bayarPelanggan('${key}')"><i class="fa-solid fa-money-bill"></i></button>
+          <button onclick="editPelanggan('${key}')"><i class="fa-solid fa-pen-to-square"></i></button>
+          <button onclick="hapusPelanggan('${key}')"><i class="fa-solid fa-trash"></i></button>
         </td>
       `;
       tbody.appendChild(tr);
@@ -128,7 +90,7 @@ function loadPelanggan() {
   });
 }
 
-// Load Pelanggan Lunas
+// Load Data Pelanggan Lunas
 function loadPelangganLunas() {
   db.ref('pelanggan/lunas').once('value').then(snapshot => {
     const data = snapshot.val() || {};
@@ -148,7 +110,7 @@ function loadPelangganLunas() {
         <td>${p.keterangan || '-'}</td>
         <td>${p.paket || '-'}</td>
         <td>Rp. ${parseInt(p.harga || 0).toLocaleString('id-ID')}</td>
-        <td><button onclick="kembalikanPelanggan('${key}')" title="Kembalikan"><i class="fa-solid fa-rotate-left"></i></button></td>
+        <td><button onclick="kembalikanPelanggan('${key}')"><i class="fa-solid fa-rotate-left"></i></button></td>
       `;
       tbody.appendChild(tr);
       total += parseInt(p.harga || 0);
@@ -163,12 +125,7 @@ function bayarPelanggan(id) {
   db.ref(`pelanggan/aktif/${id}`).once('value').then(snapshot => {
     const data = snapshot.val();
     if (data && data.nama) {
-      db.ref(`pelanggan/lunas/${id}`).set({
-        nama: data.nama,
-        keterangan: data.keterangan,
-        paket: data.paket,
-        harga: data.harga
-      }).then(() => {
+      db.ref(`pelanggan/lunas/${id}`).set(data).then(() => {
         db.ref(`pelanggan/aktif/${id}`).remove().then(() => {
           alert("Data berhasil dipindahkan ke Lunas!");
           loadPelanggan();
@@ -186,12 +143,7 @@ function kembalikanPelanggan(id) {
   db.ref(`pelanggan/lunas/${id}`).once('value').then(snapshot => {
     const data = snapshot.val();
     if (data && data.nama) {
-      db.ref(`pelanggan/aktif/${id}`).set({
-        nama: data.nama,
-        keterangan: data.keterangan,
-        paket: data.paket,
-        harga: data.harga
-      }).then(() => {
+      db.ref(`pelanggan/aktif/${id}`).set(data).then(() => {
         db.ref(`pelanggan/lunas/${id}`).remove().then(() => {
           alert("Data berhasil dikembalikan ke Aktif!");
           loadPelanggan();
@@ -233,6 +185,6 @@ function hapusPelanggan(id) {
 
 // Auto-Load
 window.onload = function() {
-  if (document.querySelector('.data-table tbody')) loadPelangganLunas();
   if (document.querySelector('#pelangganTable tbody')) loadPelanggan();
+  if (document.querySelector('.data-table tbody')) loadPelangganLunas();
 };
