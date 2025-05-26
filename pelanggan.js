@@ -131,7 +131,7 @@ function loadPelanggan() {
 function loadPelangganLunas() {
   db.ref('pelanggan/lunas').once('value').then(snapshot => {
     const data = snapshot.val() || {};
-    const tbody = document.getElementById('tabelLunasBody');
+    const tbody = document.querySelector('.data-table tbody'); // atau pakai id sesuai HTML kamu
     if (!tbody) return;
 
     tbody.innerHTML = '';
@@ -147,7 +147,7 @@ function loadPelangganLunas() {
         <td>${p.keterangan || '-'}</td>
         <td>${p.paket || '-'}</td>
         <td>Rp. ${parseInt(p.harga || 0).toLocaleString('id-ID')}</td>
-        <td><button onclick="kembalikanPelanggan('${key}')" title="Kembalikan"><i class="fa-solid fa-rotate-left"></i></button></td>
+        <td><button onclick="kembalikanPelanggan('${key}')"><i class="fa-solid fa-rotate-left"></i></button></td>
       `;
       tbody.appendChild(tr);
       total += parseInt(p.harga || 0);
