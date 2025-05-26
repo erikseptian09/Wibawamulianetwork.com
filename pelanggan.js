@@ -96,8 +96,9 @@ function tambahPelangganBaru() {
 function loadPelanggan() {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
     const data = snapshot.val() || {};
-    const tbody = document.getElementById('tabelBody');
+    const tbody = document.querySelector('#pelangganTable tbody');
     if (!tbody) return;
+
     tbody.innerHTML = '';
     let no = 1, total = 0;
 
