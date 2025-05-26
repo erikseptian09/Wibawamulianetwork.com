@@ -8,6 +8,7 @@ let dataPaket = {
   "Paket 10 Mbps": { "keterangan": "(Paket Bisnis)", "harga": "200000" }
 };
 
+// Upload JSON
 function uploadJSON() {
   const fileInput = document.getElementById('jsonFile');
   const file = fileInput.files[0];
@@ -36,7 +37,7 @@ function uploadJSON() {
   reader.readAsText(file);
 }
 
-// Update Otomatis
+// Update Keterangan & Harga
 function updateOtomatis() {
   const paket = document.getElementById('paketBaru').value;
   if (paket && dataPaket[paket]) {
@@ -48,7 +49,7 @@ function updateOtomatis() {
   }
 }
 
-// Tambah Pelanggan
+// Generate ID Pelanggan
 function generateIDPelanggan(callback) {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
     const data = snapshot.val();
@@ -67,6 +68,7 @@ function generateIDPelanggan(callback) {
   });
 }
 
+// Tambah Pelanggan
 function tambahPelangganBaru() {
   const nama = document.getElementById('namaBaru').value.trim();
   const keterangan = document.getElementById('keteranganBaru').value.trim();
@@ -76,8 +78,7 @@ function tambahPelangganBaru() {
   if (nama && paket && harga) {
     generateIDPelanggan(function(newKey) {
       db.ref('pelanggan/aktif/' + newKey).set({
-        nama, keterangan, paket, harga,
-        aktif: true, lunas: false
+        nama, keterangan, paket, harga
       }).then(() => {
         alert('Pelanggan berhasil ditambahkan!');
         document.getElementById('namaBaru').value = '';
@@ -92,7 +93,7 @@ function tambahPelangganBaru() {
   }
 }
 
-// Load Data Aktif
+// Load Pelanggan Aktif
 function loadPelanggan() {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
     const data = snapshot.val() || {};
@@ -108,14 +109,14 @@ function loadPelanggan() {
       tr.innerHTML = `
         <td>${no++}</td>
         <td>${key}</td>
-        <td>${p.nama}</td>
-        <td>${p.keterangan}</td>
-        <td>${p.paket}</td>
-        <td>Rp. ${parseInt(p.harga).toLocaleString('id-ID')}</td>
+        <td>${p.nama || '-'}</td>
+        <td>${p.keterangan || '-'}</td>
+        <td>${p.paket || '-'}</td>
+        <td>Rp. ${parseInt(p.harga || 0).toLocaleString('id-ID')}</td>
         <td>
-          <button onclick="bayarPelanggan('${key}')">Bayar</button>
-          <button onclick="editPelanggan('${key}')">Edit</button>
-          <button onclick="hapusPelanggan('${key}')">Hapus</button>
+          <button onclick="bayarPelanggan('${key}')" title="Bayar"><i class="fa-solid fa-money-bill"></i></button>
+          <button onclick="editPelanggan('${key}')" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+          <button onclick="hapusPelanggan('${key}')" title="Hapus"><i class="fa-solid fa-trash"></i></button>
         </td>
       `;
       tbody.appendChild(tr);
@@ -126,11 +127,11 @@ function loadPelanggan() {
   });
 }
 
-// Load Data Lunas
+// Load Pelanggan Lunas
 function loadPelangganLunas() {
   db.ref('pelanggan/lunas').once('value').then(snapshot => {
     const data = snapshot.val() || {};
-    const tbody = document.getElementById('tabelLunasBody'); // Sesuaikan dengan id di HTML
+    const tbody = document.getElementById('tabelLunasBody');
     if (!tbody) return;
 
     tbody.innerHTML = '';
@@ -146,7 +147,7 @@ function loadPelangganLunas() {
         <td>${p.keterangan || '-'}</td>
         <td>${p.paket || '-'}</td>
         <td>Rp. ${parseInt(p.harga || 0).toLocaleString('id-ID')}</td>
-        <td><button onclick="kembalikanPelanggan('${key}')">Kembalikan</button></td>
+        <td><button onclick="kembalikanPelanggan('${key}')" title="Kembalikan"><i class="fa-solid fa-rotate-left"></i></button></td>
       `;
       tbody.appendChild(tr);
       total += parseInt(p.harga || 0);
@@ -155,20 +156,26 @@ function loadPelangganLunas() {
     document.getElementById('totalHargaLunas').innerText = `Rp. ${total.toLocaleString('id-ID')}`;
   });
 }
+
 // Bayar (Pindahkan ke Lunas)
 function bayarPelanggan(id) {
   db.ref(`pelanggan/aktif/${id}`).once('value').then(snapshot => {
     const data = snapshot.val();
-    if (data) {
-      data.aktif = false;
-      data.lunas = true;
-      db.ref(`pelanggan/lunas/${id}`).set(data).then(() => {
+    if (data && data.nama) {
+      db.ref(`pelanggan/lunas/${id}`).set({
+        nama: data.nama,
+        keterangan: data.keterangan,
+        paket: data.paket,
+        harga: data.harga
+      }).then(() => {
         db.ref(`pelanggan/aktif/${id}`).remove().then(() => {
           alert("Data berhasil dipindahkan ke Lunas!");
           loadPelanggan();
           loadPelangganLunas();
         });
       });
+    } else {
+      alert("Data tidak lengkap atau tidak ditemukan!");
     }
   });
 }
@@ -177,16 +184,21 @@ function bayarPelanggan(id) {
 function kembalikanPelanggan(id) {
   db.ref(`pelanggan/lunas/${id}`).once('value').then(snapshot => {
     const data = snapshot.val();
-    if (data) {
-      data.aktif = true;
-      data.lunas = false;
-      db.ref(`pelanggan/aktif/${id}`).set(data).then(() => {
+    if (data && data.nama) {
+      db.ref(`pelanggan/aktif/${id}`).set({
+        nama: data.nama,
+        keterangan: data.keterangan,
+        paket: data.paket,
+        harga: data.harga
+      }).then(() => {
         db.ref(`pelanggan/lunas/${id}`).remove().then(() => {
           alert("Data berhasil dikembalikan ke Aktif!");
           loadPelanggan();
           loadPelangganLunas();
         });
       });
+    } else {
+      alert("Data tidak lengkap atau tidak ditemukan!");
     }
   });
 }
