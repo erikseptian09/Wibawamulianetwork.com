@@ -1,6 +1,13 @@
 // pelanggan.js
 const db = firebase.database();
 
+let dataPaket = {
+  "Paket 5Mbps": { "keterangan": "Basic package", "harga": "150000" },
+  "Paket 7Mbps": { "keterangan": "Standard package", "harga": "170000" },
+  "Paket 10Mbps": { "keterangan": "Premium package", "harga": "200000" }
+};
+
+// Upload JSON
 function uploadJSON() {
   const fileInput = document.getElementById('jsonFile');
   const file = fileInput.files[0];
@@ -11,25 +18,24 @@ function uploadJSON() {
 
   const reader = new FileReader();
   reader.onload = function(e) {
-    const json = JSON.parse(e.target.result);
-    db.ref('pelanggan/aktif').set(json, (error) => {
-      if (error) {
-        alert('Gagal upload data: ' + error.message);
-      } else {
-        alert('Data berhasil diupload!');
-        loadPelanggan();
-      }
-    });
+    try {
+      const json = JSON.parse(e.target.result);
+      db.ref('pelanggan/aktif').set(json, (error) => {
+        if (error) {
+          alert('Gagal upload data: ' + error.message);
+        } else {
+          alert('Data berhasil diupload!');
+          loadPelanggan();
+        }
+      });
+    } catch (err) {
+      alert('File JSON tidak valid!');
+    }
   };
   reader.readAsText(file);
 }
 
-let dataPaket = {
-  "Paket 5Mbps": { "keterangan": "Basic package", "harga": "150000" },
-  "Paket 7Mbps": { "keterangan": "Standard package", "harga": "170000" },
-  "Paket 10Mbps": { "keterangan": "Premium package", "harga": "200000" }
-};
-
+// Update otomatis keterangan & harga sesuai paket
 function updateOtomatis() {
   const paket = document.getElementById('paketBaru').value;
   if (paket && dataPaket[paket]) {
@@ -41,11 +47,11 @@ function updateOtomatis() {
   }
 }
 
+// Generate ID pelanggan otomatis
 function generateIDPelanggan(callback) {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
     const data = snapshot.val();
     let maxID = 0;
-
     if (data) {
       Object.keys(data).forEach(key => {
         const match = key.match(/pel_(\d+)/);
@@ -55,12 +61,12 @@ function generateIDPelanggan(callback) {
         }
       });
     }
-
     const newID = 'pel_' + String(maxID + 1).padStart(3, '0');
     callback(newID);
   });
 }
 
+// Tambah pelanggan baru
 function tambahPelangganBaru() {
   const nama = document.getElementById('namaBaru').value.trim();
   const keterangan = document.getElementById('keteranganBaru').value.trim();
@@ -88,12 +94,14 @@ function tambahPelangganBaru() {
   }
 }
 
+// Load data pelanggan
 function loadPelanggan() {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
     const data = snapshot.val();
     const tbody = document.getElementById('tabelBody');
     tbody.innerHTML = '';
     let no = 1;
+    let total = 0;
 
     for (let key in data) {
       const p = data[key];
@@ -103,13 +111,16 @@ function loadPelanggan() {
         <td>${key}</td>
         <td>${p.nama}</td>
         <td>${p.paket}</td>
+        <td>${p.harga}</td>
         <td>${p.keterangan}</td>
         <td>Rp. ${parseInt(p.harga).toLocaleString('id-ID')}</td>
+        <td>
+          <button onclick="editPelanggan('${key}')">✏️</button>
+          <button onclick="hapusPelanggan('${key}')">🗑️</button>
+          <button onclick="bayarPelanggan('${key}')">💳</button>
+        </td>
       `;
       tbody.appendChild(tr);
-
-window.onload = loadPelanggan;
-
       total += parseInt(p.harga || 0);
     }
 
@@ -117,6 +128,7 @@ window.onload = loadPelanggan;
   });
 }
 
+// Edit pelanggan
 function editPelanggan(id) {
   const namaBaru = prompt("Masukkan nama baru:");
   const paketBaru = prompt("Masukkan paket baru:");
@@ -134,6 +146,7 @@ function editPelanggan(id) {
   }
 }
 
+// Hapus pelanggan
 function hapusPelanggan(id) {
   if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
     db.ref(`pelanggan/aktif/${id}`).remove().then(() => {
@@ -143,6 +156,7 @@ function hapusPelanggan(id) {
   }
 }
 
+// Bayar pelanggan
 function bayarPelanggan(id) {
   db.ref(`pelanggan/aktif/${id}`).once('value').then(snapshot => {
     const data = snapshot.val();
@@ -155,6 +169,7 @@ function bayarPelanggan(id) {
   });
 }
 
+// Auto load
 window.onload = function() {
   if (document.getElementById('tabelBody')) {
     loadPelanggan();
