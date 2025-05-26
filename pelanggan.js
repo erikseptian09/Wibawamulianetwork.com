@@ -232,6 +232,5 @@ function hapusPelanggan(id) {
 
 // Auto-Load
 window.onload = function() {
-  if (document.getElementById('tabelLunasBody')) loadPelangganLunas();
+  if (document.querySelector('.data-table tbody')) loadPelangganLunas();
   if (document.querySelector('#pelangganTable tbody')) loadPelanggan();
-};
