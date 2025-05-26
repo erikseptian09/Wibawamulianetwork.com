@@ -1,17 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Data Pelanggan Aktif</title>
-  <link rel="stylesheet" href="pelanggan.css">
+  <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
   <div class="container">
     <h2>Data Pelanggan Aktif</h2>
-    <div>
+    <div class="form-tambah">
       <input type="text" id="namaBaru" placeholder="Nama">
       <select id="paketBaru" onchange="updateOtomatis()">
         <option value="">--Pilih Paket--</option>
@@ -19,11 +18,11 @@
         <option value="Paket 7 Mbps">Paket 7 Mbps</option>
         <option value="Paket 10 Mbps">Paket 10 Mbps</option>
       </select>
-      <input type="text" id="keteranganBaru" placeholder="Keterangan">
-      <input type="number" id="hargaBaru" placeholder="Harga">
-      <button onclick="tambahPelangganBaru()">Tambah</button>
+      <input type="text" id="keteranganBaru" placeholder="Keterangan" readonly>
+      <input type="number" id="hargaBaru" placeholder="Harga" readonly>
+      <button onclick="tambahPelangganBaru()"><i class="fa-solid fa-plus"></i> Tambah</button>
       <input type="file" id="jsonFile">
-      <button onclick="uploadJSON()">Upload JSON</button>
+      <button onclick="uploadJSON()"><i class="fa-solid fa-upload"></i> Upload JSON</button>
     </div>
     <table id="pelangganTable">
       <thead>
@@ -41,7 +40,6 @@
     </table>
     <p>Total Harga: <span id="totalHarga">Rp. 0</span></p>
   </div>
-
   <script src="firebase_config.js"></script>
   <script src="pelanggan.js"></script>
 </body>
