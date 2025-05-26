@@ -1,72 +1,48 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>e-Billing System</title>
-    <link rel="stylesheet" href="pelanggan.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Pelanggan Aktif</title>
+  <link rel="stylesheet" href="pelanggan.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <header>
-        <h1>e-Billing System</h1>
-        <nav><a href="pelanggan_lunas.html">Lihat Data Lunas</a>
-             <a href="index.html">Logout</a>
-        </nav>
-    </header>
+  <div class="container">
+    <h2>Data Pelanggan Aktif</h2>
+    <div>
+      <input type="text" id="namaBaru" placeholder="Nama">
+      <select id="paketBaru" onchange="updateOtomatis()">
+        <option value="">--Pilih Paket--</option>
+        <option value="Paket 5 Mbps">Paket 5 Mbps</option>
+        <option value="Paket 7 Mbps">Paket 7 Mbps</option>
+        <option value="Paket 10 Mbps">Paket 10 Mbps</option>
+      </select>
+      <input type="text" id="keteranganBaru" placeholder="Keterangan">
+      <input type="number" id="hargaBaru" placeholder="Harga">
+      <button onclick="tambahPelangganBaru()">Tambah</button>
+      <input type="file" id="jsonFile">
+      <button onclick="uploadJSON()">Upload JSON</button>
+    </div>
+    <table id="pelangganTable">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>ID</th>
+          <th>Nama</th>
+          <th>Keterangan</th>
+          <th>Paket</th>
+          <th>Harga</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <p>Total Harga: <span id="totalHarga">Rp. 0</span></p>
+  </div>
 
-    <main>
-       
-        <div class="table-container">
-           <input type="text" id="searchInput" placeholder="Cari Nama Pelanggan...">
-            <input type="file" id="jsonFile" accept=".json" />
-  <button onclick="uploadJSON()">Upload JSON</button>
-            <table id="pelangganTable">
-                <thead>
-    <tr>
-        <th>No</th>
-        <th>ID</th>
-        <th>Nama</th>
-        <th>Keterangan</th>
-        <th>Paket</th>
-        <th>Harga</th>
-        <th>Aksi</th>
-    </tr>
-    <tr>
-        <td>#</td>
-        <td>Auto</td>
-        <td><input type="text" id="namaBaru" placeholder="Nama"></td>
-            <td><input type="text" id="keteranganBaru" placeholder="Keterangan" readonly></td>
-            <td><select id="paketBaru" onchange="updateOtomatis()">
-              <option value="">Pilih Paket</option>
-              <option value="Paket 5Mbps">Paket 5Mbps</option>
-              <option value="Paket 7Mbps">Paket 7Mbps</option>
-              <option value="Paket 10Mbps">Paket 10Mbps</option>
-            </select></td>
-            <td><input type="number" id="hargaBaru" placeholder="Harga" readonly></td>
-           <td>
-            <button class="tambah" onclick="tambahPelangganBaru()">Tambah</button>
-        </td>
-    </tr>
-</thead>
-                <tbody id="tabelBody">
-                    <!-- Data pelanggan akan dimuat di sini -->
-                </tbody>
-            </table>
-
-            <div class="total">
-                <strong>Total:</strong> <span id="totalHarga">Rp. 0</span>
-            </div>
-        </div>
-    </main>
-    
-    <footer>
-        <p>&copy; <span id="tahun"></span> WBM.NET Created 2025</p>
-    </footer>
-
-    <script src="firebase_config.js"></script>
-    <script src="pelanggan.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="pelanggan.js"></script>
 </body>
 </html>
