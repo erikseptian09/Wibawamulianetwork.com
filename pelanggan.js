@@ -1,5 +1,4 @@
 
-// pelanggan.js (Final Lengkap dengan Ikon dan Fungsi Lengkap)
 const db = firebase.database();
 
 // Data Paket
