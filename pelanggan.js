@@ -94,7 +94,7 @@ function tambahPelangganBaru() {
   }
 }
 
-// Load data pelanggan
+// Ambil data pelanggan dari Firebase
 function loadPelanggan() {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
     const data = snapshot.val();
@@ -103,24 +103,28 @@ function loadPelanggan() {
     let no = 1;
     let total = 0;
 
-    for (let key in data) {
-      const p = data[key];
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${no++}</td>
-        <td>${key}</td>
-        <td>${p.nama}</td>
-        <td>${p.keterangan}</td>
-        <td>${p.paket}</td>
-        <td>Rp. ${parseInt(p.harga).toLocaleString('id-ID')}</td>
-        <td>
-          <button onclick="editPelanggan('${key}')">✏️</button>
-          <button onclick="hapusPelanggan('${key}')">🗑️</button>
-          <button onclick="bayarPelanggan('${key}')">💳</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-      total += parseInt(p.harga || 0);
+    if (data) {
+      Object.keys(data).forEach(key => {
+        const p = data[key];  // Ambil data tiap pelanggan
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${no++}</td>
+          <td>${key}</td>
+          <td><strong>${p.nama || '-'}</strong></td>
+          <td>${p.keterangan || '-'}</td>
+          <td>${p.paket || '-'}</td>
+          <td>Rp. ${parseInt(p.harga || 0).toLocaleString('id-ID')}</td>
+          <td>
+            <button onclick="editPelanggan('${key}')">✏️</button>
+            <button onclick="hapusPelanggan('${key}')">🗑️</button>
+            <button onclick="bayarPelanggan('${key}')">💳</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+
+        total += parseInt(p.harga || 0);
+      });
     }
 
     document.getElementById('totalHarga').innerText = `Rp. ${total.toLocaleString('id-ID')}`;
