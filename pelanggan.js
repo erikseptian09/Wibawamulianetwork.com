@@ -130,8 +130,9 @@ function loadPelanggan() {
 function loadPelangganLunas() {
   db.ref('pelanggan/lunas').once('value').then(snapshot => {
     const data = snapshot.val() || {};
-    const tbody = document.getElementById('tabelLunasBody');
+    const tbody = document.getElementById('tabelLunasBody'); // Sesuaikan dengan id di HTML
     if (!tbody) return;
+
     tbody.innerHTML = '';
     let no = 1, total = 0;
 
@@ -141,13 +142,11 @@ function loadPelangganLunas() {
       tr.innerHTML = `
         <td>${no++}</td>
         <td>${key}</td>
-        <td>${p.nama}</td>
-        <td>${p.keterangan}</td>
-        <td>${p.paket}</td>
-        <td>Rp. ${parseInt(p.harga).toLocaleString('id-ID')}</td>
-        <td>
-          <button onclick="kembalikanPelanggan('${key}')">Kembalikan</button>
-        </td>
+        <td>${p.nama || '-'}</td>
+        <td>${p.keterangan || '-'}</td>
+        <td>${p.paket || '-'}</td>
+        <td>Rp. ${parseInt(p.harga || 0).toLocaleString('id-ID')}</td>
+        <td><button onclick="kembalikanPelanggan('${key}')">Kembalikan</button></td>
       `;
       tbody.appendChild(tr);
       total += parseInt(p.harga || 0);
@@ -156,7 +155,6 @@ function loadPelangganLunas() {
     document.getElementById('totalHargaLunas').innerText = `Rp. ${total.toLocaleString('id-ID')}`;
   });
 }
-
 // Bayar (Pindahkan ke Lunas)
 function bayarPelanggan(id) {
   db.ref(`pelanggan/aktif/${id}`).once('value').then(snapshot => {
@@ -222,6 +220,6 @@ function hapusPelanggan(id) {
 
 // Auto-Load
 window.onload = function() {
-  if (document.getElementById('tabelBody')) loadPelanggan();
   if (document.getElementById('tabelLunasBody')) loadPelangganLunas();
+  if (document.querySelector('#pelangganTable tbody')) loadPelanggan();
 };
