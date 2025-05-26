@@ -1,7 +1,7 @@
 // pelanggan.js
 const db = firebase.database();
 
-// Fungsi Upload JSON
+// Upload JSON
 function uploadJSON() {
   const fileInput = document.getElementById('jsonFile');
   const file = fileInput.files[0];
@@ -27,9 +27,9 @@ function uploadJSON() {
 
 // Data Paket
 let dataPaket = {
-  "Paket 5 Mbps": { "keterangan": "(Max 5 Device)", "harga": "150000" },
-  "Paket 7 Mbps": { "keterangan": "(Max 7 Device)", "harga": "170000" },
-  "Paket 10 Mbps": { "keterangan": "(Paket Bisnis)", "harga": "200000" }
+  "Paket 5Mbps": { "keterangan": "(Max 5 Device)", "harga": "150000" },
+  "Paket 7Mbps": { "keterangan": "(Max 7 Device)", "harga": "170000" },
+  "Paket 10Mbps": { "keterangan": "(Paket Bisnis)", "harga": "200000" }
 };
 
 // Update Otomatis Keterangan dan Harga
@@ -98,6 +98,8 @@ function loadPelanggan() {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
     const data = snapshot.val();
     const tbody = document.getElementById('tabelBody');
+    if (!tbody) return; // Cek elemen ada
+
     tbody.innerHTML = '';
     let no = 1;
     let total = 0;
@@ -109,8 +111,8 @@ function loadPelanggan() {
         <td>${no++}</td>
         <td>${key}</td>
         <td>${p.nama}</td>
-        <td>${p.paket}</td>
         <td>${p.keterangan}</td>
+        <td>${p.paket}</td>
         <td>Rp. ${parseInt(p.harga).toLocaleString('id-ID')}</td>
         <td>
           <button onclick="bayarPelanggan('${key}')">Bayar</button>
@@ -130,7 +132,9 @@ function loadPelanggan() {
 function loadPelangganLunas() {
   db.ref('pelanggan/lunas').once('value').then(snapshot => {
     const data = snapshot.val();
-    const tbody = document.getElementById('tabelBodyLunas');
+    const tbody = document.getElementById('tabelLunasBody');
+    if (!tbody) return; // Cek elemen ada
+
     tbody.innerHTML = '';
     let no = 1;
     let total = 0;
@@ -142,8 +146,8 @@ function loadPelangganLunas() {
         <td>${no++}</td>
         <td>${key}</td>
         <td>${p.nama}</td>
-        <td>${p.paket}</td>
         <td>${p.keterangan}</td>
+        <td>${p.paket}</td>
         <td>Rp. ${parseInt(p.harga).toLocaleString('id-ID')}</td>
       `;
       tbody.appendChild(tr);
@@ -170,7 +174,7 @@ function bayarPelanggan(id) {
   });
 }
 
-// Fungsi Edit
+// Edit dan Hapus
 function editPelanggan(id) {
   const namaBaru = prompt("Masukkan nama baru:");
   const paketBaru = prompt("Masukkan paket baru:");
@@ -188,7 +192,6 @@ function editPelanggan(id) {
   }
 }
 
-// Fungsi Hapus
 function hapusPelanggan(id) {
   if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
     db.ref(`pelanggan/aktif/${id}`).remove().then(() => {
@@ -198,12 +201,8 @@ function hapusPelanggan(id) {
   }
 }
 
-// Auto Load Data di Halaman
+// Auto Load
 window.onload = function() {
-  if (document.getElementById('tabelBody')) {
-    loadPelanggan();
-  }
-  if (document.getElementById('tabelBodyLunas')) {
-    loadPelangganLunas();
-  }
+  loadPelanggan();
+  loadPelangganLunas();
 };
