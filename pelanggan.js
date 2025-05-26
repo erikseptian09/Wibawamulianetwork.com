@@ -1,6 +1,29 @@
 // pelanggan.js
 const db = firebase.database();
 
+function uploadJSON() {
+  const fileInput = document.getElementById('jsonFile');
+  const file = fileInput.files[0];
+  if (!file) {
+    alert('Pilih file JSON terlebih dulu.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const json = JSON.parse(e.target.result);
+    db.ref('pelanggan/aktif').set(json, (error) => {
+      if (error) {
+        alert('Gagal upload data: ' + error.message);
+      } else {
+        alert('Data berhasil diupload!');
+        loadPelanggan();
+      }
+    });
+  };
+  reader.readAsText(file);
+}
+
 let dataPaket = {
   "Paket 5Mbps": { "keterangan": "Basic package", "harga": "150000" },
   "Paket 7Mbps": { "keterangan": "Standard package", "harga": "170000" },
@@ -71,26 +94,21 @@ function loadPelanggan() {
     const tbody = document.getElementById('tabelBody');
     tbody.innerHTML = '';
     let no = 1;
-    let total = 0;
 
     for (let key in data) {
       const p = data[key];
       const tr = document.createElement('tr');
-
       tr.innerHTML = `
         <td>${no++}</td>
         <td>${key}</td>
-        <td><strong>${p.nama}</strong></td>
-        <td>${p.keterangan || '-'}</td>
+        <td>${p.nama}</td>
         <td>${p.paket}</td>
+        <td>${p.keterangan}</td>
         <td>Rp. ${parseInt(p.harga).toLocaleString('id-ID')}</td>
-        <td>
-          <button onclick="editPelanggan('${key}')">✏️</button>
-          <button class="hapus" onclick="hapusPelanggan('${key}')">🗑️</button>
-          <button class="bayar" onclick="bayarPelanggan('${key}')">💳</button>
-        </td>
       `;
       tbody.appendChild(tr);
+
+window.onload = loadPelanggan;
 
       total += parseInt(p.harga || 0);
     }
