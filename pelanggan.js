@@ -19,15 +19,19 @@ function uploadJSON() {
   const reader = new FileReader();
   reader.onload = function(e) {
     const json = JSON.parse(e.target.result);
-    db.ref('pelanggan').set(json, (error) => {
-      if (error) {
-        alert('Gagal upload data: ' + error.message);
-      } else {
-        alert('Data berhasil diupload!');
-        loadPelanggan();
-        loadPelangganLunas();
-      }
-    });
+    if (json.pelanggan && json.pelanggan.aktif) {
+      db.ref('pelanggan/aktif').set(json.pelanggan.aktif, (error) => {
+        if (error) {
+          alert('Gagal upload data: ' + error.message);
+        } else {
+          alert('Data berhasil diupload!');
+          loadPelanggan();
+          loadPelangganLunas();
+        }
+      });
+    } else {
+      alert('Format JSON tidak sesuai. Harus ada pelanggan > aktif');
+    }
   };
   reader.readAsText(file);
 }
