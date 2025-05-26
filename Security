@@ -1,0 +1,36 @@
+# Security Policy
+
+## Supported Versions
+
+Berikut adalah versi-versi yang saat ini **mendapatkan pembaruan keamanan** dalam proyek ini:
+
+| Versi     | Status Dukungan     |
+| --------- | ------------------- |
+| 5.1.x     | ✅ Didukung         |
+| 5.0.x     | ❌ Tidak Didukung   |
+| 4.x       | ❌ Tidak Didukung   |
+| < 4.0     | ❌ Tidak Didukung   |
+
+Silakan gunakan versi terbaru (5.1.x) untuk mendapatkan pembaruan keamanan dan fitur terbaru.
+
+---
+
+## Reporting a Vulnerability
+
+Jika Anda menemukan **kerentanan keamanan** pada proyek ini, silakan ikuti langkah-langkah berikut untuk melaporkannya:
+
+1. Kirim email ke: **erikseptian450@gmail.com** dengan subjek: **[Security Issue]**
+2. Sertakan detail lengkap:
+   - Deskripsi masalah
+   - Langkah-langkah reproduksi (jika ada)
+   - Potensi dampak
+3. Kami akan merespons dalam waktu maksimal **3x24 jam** setelah laporan diterima.
+
+---
+
+## Catatan
+
+- Mohon untuk **tidak mengumumkan masalah keamanan secara publik** sebelum ada perbaikan resmi.
+- Jika kerentanan telah diperbaiki, kami akan memberikan pemberitahuan melalui rilis terbaru di GitHub.
+
+Terima kasih telah membantu menjaga keamanan proyek ini!
