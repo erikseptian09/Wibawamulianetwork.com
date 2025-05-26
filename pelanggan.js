@@ -110,9 +110,8 @@ function loadPelanggan() {
         <td>${no++}</td>
         <td>${key}</td>
         <td>${p.nama}</td>
-        <td>${p.paket}</td>
-        <td>${p.harga}</td>
         <td>${p.keterangan}</td>
+        <td>${p.paket}</td>
         <td>Rp. ${parseInt(p.harga).toLocaleString('id-ID')}</td>
         <td>
           <button onclick="editPelanggan('${key}')">✏️</button>
