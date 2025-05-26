@@ -104,9 +104,7 @@ function loadPelanggan() {
     let total = 0;
 
     if (data) {
-      Object.keys(data).forEach(key => {
-        const p = data[key];  // Ambil data tiap pelanggan
-
+      Object.entries(data).forEach(([key, p]) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${no++}</td>
@@ -122,15 +120,15 @@ function loadPelanggan() {
           </td>
         `;
         tbody.appendChild(tr);
-
         total += parseInt(p.harga || 0);
       });
+    } else {
+      tbody.innerHTML = '<tr><td colspan="7">Tidak ada data pelanggan</td></tr>';
     }
 
     document.getElementById('totalHarga').innerText = `Rp. ${total.toLocaleString('id-ID')}`;
   });
 }
-
 // Edit pelanggan
 function editPelanggan(id) {
   const namaBaru = prompt("Masukkan nama baru:");
