@@ -1,38 +1,14 @@
 // pelanggan.js
 const db = firebase.database();
 
-// Upload JSON
-function uploadJSON() {
-  const fileInput = document.getElementById('jsonFile');
-  const file = fileInput.files[0];
-  if (!file) {
-    alert('Pilih file JSON terlebih dulu.');
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const json = JSON.parse(e.target.result);
-    db.ref('pelanggan/aktif').set(json, (error) => {
-      if (error) {
-        alert('Gagal upload data: ' + error.message);
-      } else {
-        alert('Data berhasil diupload!');
-        loadPelanggan();
-      }
-    });
-  };
-  reader.readAsText(file);
-}
-
-// Data Paket
+// Data Paket (bisa ditambah sesuai kebutuhan)
 let dataPaket = {
-  "Paket 5Mbps": { "keterangan": "(Max 5 Device)", "harga": "150000" },
-  "Paket 7Mbps": { "keterangan": "(Max 7 Device)", "harga": "170000" },
-  "Paket 10Mbps": { "keterangan": "(Paket Bisnis)", "harga": "200000" }
+  "Paket 5 Mbps": { "keterangan": "(Max 5 Device)", "harga": "150000" },
+  "Paket 7 Mbps": { "keterangan": "(Max 7 Device)", "harga": "170000" },
+  "Paket 10 Mbps": { "keterangan": "(Paket Bisnis)", "harga": "200000" }
 };
 
-// Update Otomatis Keterangan dan Harga
+// Update otomatis input keterangan dan harga
 function updateOtomatis() {
   const paket = document.getElementById('paketBaru').value;
   if (paket && dataPaket[paket]) {
@@ -44,12 +20,11 @@ function updateOtomatis() {
   }
 }
 
-// Generate ID Pelanggan
+// Tambah pelanggan baru ke Firebase
 function generateIDPelanggan(callback) {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
     const data = snapshot.val();
     let maxID = 0;
-
     if (data) {
       Object.keys(data).forEach(key => {
         const match = key.match(/pel_(\d+)/);
@@ -59,13 +34,11 @@ function generateIDPelanggan(callback) {
         }
       });
     }
-
     const newID = 'pel_' + String(maxID + 1).padStart(3, '0');
     callback(newID);
   });
 }
 
-// Tambah Pelanggan Baru
 function tambahPelangganBaru() {
   const nama = document.getElementById('namaBaru').value.trim();
   const keterangan = document.getElementById('keteranganBaru').value.trim();
@@ -75,10 +48,7 @@ function tambahPelangganBaru() {
   if (nama && paket && harga) {
     generateIDPelanggan(function(newKey) {
       db.ref('pelanggan/aktif/' + newKey).set({
-        nama: nama,
-        keterangan: keterangan,
-        paket: paket,
-        harga: harga
+        nama, keterangan, paket, harga
       }).then(() => {
         alert('Pelanggan berhasil ditambahkan!');
         document.getElementById('namaBaru').value = '';
@@ -93,16 +63,15 @@ function tambahPelangganBaru() {
   }
 }
 
-// Load Tabel Pelanggan Aktif
+// Load data pelanggan aktif
 function loadPelanggan() {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
-    const data = snapshot.val();
+    const data = snapshot.val() || {};
     const tbody = document.getElementById('tabelBody');
-    if (!tbody) return; // Cek elemen ada
+    if (!tbody) return;
 
     tbody.innerHTML = '';
-    let no = 1;
-    let total = 0;
+    let no = 1, total = 0;
 
     for (let key in data) {
       const p = data[key];
@@ -128,16 +97,15 @@ function loadPelanggan() {
   });
 }
 
-// Load Tabel Pelanggan Lunas
+// Load data pelanggan lunas
 function loadPelangganLunas() {
   db.ref('pelanggan/lunas').once('value').then(snapshot => {
-    const data = snapshot.val();
+    const data = snapshot.val() || {};
     const tbody = document.getElementById('tabelLunasBody');
-    if (!tbody) return; // Cek elemen ada
+    if (!tbody) return;
 
     tbody.innerHTML = '';
-    let no = 1;
-    let total = 0;
+    let no = 1, total = 0;
 
     for (let key in data) {
       const p = data[key];
@@ -158,7 +126,7 @@ function loadPelangganLunas() {
   });
 }
 
-// Fungsi Bayar
+// Pindahkan data ke pelanggan lunas
 function bayarPelanggan(id) {
   db.ref(`pelanggan/aktif/${id}`).once('value').then(snapshot => {
     const data = snapshot.val();
@@ -174,7 +142,7 @@ function bayarPelanggan(id) {
   });
 }
 
-// Edit dan Hapus
+// Edit dan hapus
 function editPelanggan(id) {
   const namaBaru = prompt("Masukkan nama baru:");
   const paketBaru = prompt("Masukkan paket baru:");
@@ -201,8 +169,8 @@ function hapusPelanggan(id) {
   }
 }
 
-// Auto Load
+// Auto-load halaman
 window.onload = function() {
-  loadPelanggan();
-  loadPelangganLunas();
+  if (document.getElementById('tabelBody')) loadPelanggan();
+  if (document.getElementById('tabelLunasBody')) loadPelangganLunas();
 };
