@@ -1,14 +1,14 @@
 // pelanggan.js
 const db = firebase.database();
 
-// Data Paket (bisa ditambah sesuai kebutuhan)
+// Data Paket
 let dataPaket = {
   "Paket 5 Mbps": { "keterangan": "(Max 5 Device)", "harga": "150000" },
   "Paket 7 Mbps": { "keterangan": "(Max 7 Device)", "harga": "170000" },
   "Paket 10 Mbps": { "keterangan": "(Paket Bisnis)", "harga": "200000" }
 };
 
-// Update otomatis input keterangan dan harga
+// Update Otomatis
 function updateOtomatis() {
   const paket = document.getElementById('paketBaru').value;
   if (paket && dataPaket[paket]) {
@@ -20,7 +20,7 @@ function updateOtomatis() {
   }
 }
 
-// Tambah pelanggan baru ke Firebase
+// Tambah Pelanggan
 function generateIDPelanggan(callback) {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
     const data = snapshot.val();
@@ -48,7 +48,8 @@ function tambahPelangganBaru() {
   if (nama && paket && harga) {
     generateIDPelanggan(function(newKey) {
       db.ref('pelanggan/aktif/' + newKey).set({
-        nama, keterangan, paket, harga
+        nama, keterangan, paket, harga,
+        aktif: true, lunas: false
       }).then(() => {
         alert('Pelanggan berhasil ditambahkan!');
         document.getElementById('namaBaru').value = '';
@@ -63,13 +64,12 @@ function tambahPelangganBaru() {
   }
 }
 
-// Load data pelanggan aktif
+// Load Data Aktif
 function loadPelanggan() {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
     const data = snapshot.val() || {};
     const tbody = document.getElementById('tabelBody');
     if (!tbody) return;
-
     tbody.innerHTML = '';
     let no = 1, total = 0;
 
@@ -97,13 +97,12 @@ function loadPelanggan() {
   });
 }
 
-// Load data pelanggan lunas
+// Load Data Lunas
 function loadPelangganLunas() {
   db.ref('pelanggan/lunas').once('value').then(snapshot => {
     const data = snapshot.val() || {};
     const tbody = document.getElementById('tabelLunasBody');
     if (!tbody) return;
-
     tbody.innerHTML = '';
     let no = 1, total = 0;
 
@@ -117,6 +116,9 @@ function loadPelangganLunas() {
         <td>${p.keterangan}</td>
         <td>${p.paket}</td>
         <td>Rp. ${parseInt(p.harga).toLocaleString('id-ID')}</td>
+        <td>
+          <button onclick="kembalikanPelanggan('${key}')">Kembalikan</button>
+        </td>
       `;
       tbody.appendChild(tr);
       total += parseInt(p.harga || 0);
@@ -126,11 +128,13 @@ function loadPelangganLunas() {
   });
 }
 
-// Pindahkan data ke pelanggan lunas
+// Bayar (Pindahkan ke Lunas)
 function bayarPelanggan(id) {
   db.ref(`pelanggan/aktif/${id}`).once('value').then(snapshot => {
     const data = snapshot.val();
     if (data) {
+      data.aktif = false;
+      data.lunas = true;
       db.ref(`pelanggan/lunas/${id}`).set(data).then(() => {
         db.ref(`pelanggan/aktif/${id}`).remove().then(() => {
           alert("Data berhasil dipindahkan ke Lunas!");
@@ -142,7 +146,25 @@ function bayarPelanggan(id) {
   });
 }
 
-// Edit dan hapus
+// Kembalikan (Pindahkan ke Aktif)
+function kembalikanPelanggan(id) {
+  db.ref(`pelanggan/lunas/${id}`).once('value').then(snapshot => {
+    const data = snapshot.val();
+    if (data) {
+      data.aktif = true;
+      data.lunas = false;
+      db.ref(`pelanggan/aktif/${id}`).set(data).then(() => {
+        db.ref(`pelanggan/lunas/${id}`).remove().then(() => {
+          alert("Data berhasil dikembalikan ke Aktif!");
+          loadPelanggan();
+          loadPelangganLunas();
+        });
+      });
+    }
+  });
+}
+
+// Edit & Hapus
 function editPelanggan(id) {
   const namaBaru = prompt("Masukkan nama baru:");
   const paketBaru = prompt("Masukkan paket baru:");
@@ -169,7 +191,7 @@ function hapusPelanggan(id) {
   }
 }
 
-// Auto-load halaman
+// Auto-Load
 window.onload = function() {
   if (document.getElementById('tabelBody')) loadPelanggan();
   if (document.getElementById('tabelLunasBody')) loadPelangganLunas();
