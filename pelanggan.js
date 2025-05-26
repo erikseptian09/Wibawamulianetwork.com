@@ -1,13 +1,7 @@
 // pelanggan.js
 const db = firebase.database();
 
-let dataPaket = {
-  "Paket 5Mbps": { "keterangan": "Basic package", "harga": "150000" },
-  "Paket 7Mbps": { "keterangan": "Standard package", "harga": "170000" },
-  "Paket 10Mbps": { "keterangan": "Premium package", "harga": "200000" }
-};
-
-// Upload JSON
+// Fungsi Upload JSON
 function uploadJSON() {
   const fileInput = document.getElementById('jsonFile');
   const file = fileInput.files[0];
@@ -18,24 +12,27 @@ function uploadJSON() {
 
   const reader = new FileReader();
   reader.onload = function(e) {
-    try {
-      const json = JSON.parse(e.target.result);
-      db.ref('pelanggan/aktif').set(json, (error) => {
-        if (error) {
-          alert('Gagal upload data: ' + error.message);
-        } else {
-          alert('Data berhasil diupload!');
-          loadPelanggan();
-        }
-      });
-    } catch (err) {
-      alert('File JSON tidak valid!');
-    }
+    const json = JSON.parse(e.target.result);
+    db.ref('pelanggan/aktif').set(json, (error) => {
+      if (error) {
+        alert('Gagal upload data: ' + error.message);
+      } else {
+        alert('Data berhasil diupload!');
+        loadPelanggan();
+      }
+    });
   };
   reader.readAsText(file);
 }
 
-// Update otomatis keterangan & harga sesuai paket
+// Data Paket
+let dataPaket = {
+  "Paket 5 Mbps": { "keterangan": "(Max 5 Device)", "harga": "150000" },
+  "Paket 7 Mbps": { "keterangan": "(Max 7 Device)", "harga": "170000" },
+  "Paket 10 Mbps": { "keterangan": "(Paket Bisnis)", "harga": "200000" }
+};
+
+// Update Otomatis Keterangan dan Harga
 function updateOtomatis() {
   const paket = document.getElementById('paketBaru').value;
   if (paket && dataPaket[paket]) {
@@ -47,11 +44,12 @@ function updateOtomatis() {
   }
 }
 
-// Generate ID pelanggan otomatis
+// Generate ID Pelanggan
 function generateIDPelanggan(callback) {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
     const data = snapshot.val();
     let maxID = 0;
+
     if (data) {
       Object.keys(data).forEach(key => {
         const match = key.match(/pel_(\d+)/);
@@ -61,12 +59,13 @@ function generateIDPelanggan(callback) {
         }
       });
     }
+
     const newID = 'pel_' + String(maxID + 1).padStart(3, '0');
     callback(newID);
   });
 }
 
-// Tambah pelanggan baru
+// Tambah Pelanggan Baru
 function tambahPelangganBaru() {
   const nama = document.getElementById('namaBaru').value.trim();
   const keterangan = document.getElementById('keteranganBaru').value.trim();
@@ -94,7 +93,7 @@ function tambahPelangganBaru() {
   }
 }
 
-// Ambil data pelanggan dari Firebase
+// Load Tabel Pelanggan Aktif
 function loadPelanggan() {
   db.ref('pelanggan/aktif').once('value').then(snapshot => {
     const data = snapshot.val();
@@ -103,33 +102,75 @@ function loadPelanggan() {
     let no = 1;
     let total = 0;
 
-    if (data) {
-      Object.entries(data).forEach(([key, p]) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${no++}</td>
-          <td>${key}</td>
-          <td><strong>${p.nama || '-'}</strong></td>
-          <td>${p.keterangan || '-'}</td>
-          <td>${p.paket || '-'}</td>
-          <td>Rp. ${parseInt(p.harga || 0).toLocaleString('id-ID')}</td>
-          <td>
-            <button onclick="editPelanggan('${key}')">✏️</button>
-            <button onclick="hapusPelanggan('${key}')">🗑️</button>
-            <button onclick="bayarPelanggan('${key}')">💳</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-        total += parseInt(p.harga || 0);
-      });
-    } else {
-      tbody.innerHTML = '<tr><td colspan="7">Tidak ada data pelanggan</td></tr>';
+    for (let key in data) {
+      const p = data[key];
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${no++}</td>
+        <td>${key}</td>
+        <td>${p.nama}</td>
+        <td>${p.paket}</td>
+        <td>${p.keterangan}</td>
+        <td>Rp. ${parseInt(p.harga).toLocaleString('id-ID')}</td>
+        <td>
+          <button onclick="bayarPelanggan('${key}')">Bayar</button>
+          <button onclick="editPelanggan('${key}')">Edit</button>
+          <button onclick="hapusPelanggan('${key}')">Hapus</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+      total += parseInt(p.harga || 0);
     }
 
     document.getElementById('totalHarga').innerText = `Rp. ${total.toLocaleString('id-ID')}`;
   });
 }
-// Edit pelanggan
+
+// Load Tabel Pelanggan Lunas
+function loadPelangganLunas() {
+  db.ref('pelanggan/lunas').once('value').then(snapshot => {
+    const data = snapshot.val();
+    const tbody = document.getElementById('tabelBodyLunas');
+    tbody.innerHTML = '';
+    let no = 1;
+    let total = 0;
+
+    for (let key in data) {
+      const p = data[key];
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${no++}</td>
+        <td>${key}</td>
+        <td>${p.nama}</td>
+        <td>${p.paket}</td>
+        <td>${p.keterangan}</td>
+        <td>Rp. ${parseInt(p.harga).toLocaleString('id-ID')}</td>
+      `;
+      tbody.appendChild(tr);
+      total += parseInt(p.harga || 0);
+    }
+
+    document.getElementById('totalHargaLunas').innerText = `Rp. ${total.toLocaleString('id-ID')}`;
+  });
+}
+
+// Fungsi Bayar
+function bayarPelanggan(id) {
+  db.ref(`pelanggan/aktif/${id}`).once('value').then(snapshot => {
+    const data = snapshot.val();
+    if (data) {
+      db.ref(`pelanggan/lunas/${id}`).set(data).then(() => {
+        db.ref(`pelanggan/aktif/${id}`).remove().then(() => {
+          alert("Data berhasil dipindahkan ke Lunas!");
+          loadPelanggan();
+          loadPelangganLunas();
+        });
+      });
+    }
+  });
+}
+
+// Fungsi Edit
 function editPelanggan(id) {
   const namaBaru = prompt("Masukkan nama baru:");
   const paketBaru = prompt("Masukkan paket baru:");
@@ -147,7 +188,7 @@ function editPelanggan(id) {
   }
 }
 
-// Hapus pelanggan
+// Fungsi Hapus
 function hapusPelanggan(id) {
   if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
     db.ref(`pelanggan/aktif/${id}`).remove().then(() => {
@@ -157,22 +198,12 @@ function hapusPelanggan(id) {
   }
 }
 
-// Bayar pelanggan
-function bayarPelanggan(id) {
-  db.ref(`pelanggan/aktif/${id}`).once('value').then(snapshot => {
-    const data = snapshot.val();
-    db.ref(`pelanggan/lunas/${id}`).set(data).then(() => {
-      db.ref(`pelanggan/aktif/${id}`).remove().then(() => {
-        alert("Data berhasil dipindahkan ke Lunas!");
-        loadPelanggan();
-      });
-    });
-  });
-}
-
-// Auto load
+// Auto Load Data di Halaman
 window.onload = function() {
   if (document.getElementById('tabelBody')) {
     loadPelanggan();
+  }
+  if (document.getElementById('tabelBodyLunas')) {
+    loadPelangganLunas();
   }
 };
