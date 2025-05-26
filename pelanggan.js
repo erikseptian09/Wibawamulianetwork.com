@@ -8,6 +8,30 @@ let dataPaket = {
   "Paket 10 Mbps": { "keterangan": "(Paket Bisnis)", "harga": "200000" }
 };
 
+function uploadJSON() {
+  const fileInput = document.getElementById('jsonFile');
+  const file = fileInput.files[0];
+  if (!file) {
+    alert('Pilih file JSON terlebih dulu.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const json = JSON.parse(e.target.result);
+    db.ref('pelanggan').set(json, (error) => {
+      if (error) {
+        alert('Gagal upload data: ' + error.message);
+      } else {
+        alert('Data berhasil diupload!');
+        loadPelanggan();
+        loadPelangganLunas();
+      }
+    });
+  };
+  reader.readAsText(file);
+}
+
 // Update Otomatis
 function updateOtomatis() {
   const paket = document.getElementById('paketBaru').value;
