@@ -1,46 +1,34 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>e-Billing - Pelanggan Lunas</title>
-    <link rel="stylesheet" href="pelanggan.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Pelanggan Lunas</title>
+  <link rel="stylesheet" href="pelanggan.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <header class="header">
-        <h1>e-Billing System</h1>
-        <nav><a href="data_pelanggan.html">Kembali ke Data Aktif</a></nav>
-    </header>
+  <div class="container">
+    <h2>Data Pelanggan Lunas</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>ID</th>
+          <th>Nama</th>
+          <th>Keterangan</th>
+          <th>Paket</th>
+          <th>Harga</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <p>Total Harga: <span id="totalHargaLunas">Rp. 0</span></p>
+  </div>
 
-    <main class="main-content">
-        <div class="table-container">
-          <input type="text" id="searchInput" placeholder="Cari Nama Pelanggan...">
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>ID</th>
-                        <th>Nama</th>
-                        <th>Keterangan</th>
-                        <th>Paket</th>
-                        <th>Harga</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <div class="total"><strong>Total:</strong> <span id="totalHargaLunas">Rp. 0</span></div>
-        </div>
-    </main>
-
-    <footer>
-        <p>&copy; <span id="tahun"></span> WBM.NET Created 2025</p>
-    </footer>
-    
-    <script src="firebase_config.js"></script>
-    <script src="pelanggan.js"></script>
+  <script src="firebase_config.js"></script>
+  <script src="pelanggan.js"></script>
 </body>
 </html>
